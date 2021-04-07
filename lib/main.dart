@@ -40,15 +40,44 @@ class RandomWordsState extends State<RandomWords>{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: new AppBar(title: new Text("列表")),
+      appBar: new AppBar(
+          title: new Text("列表"),
+        actions: [
+          new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved)
+        ],
+      ),
       body: _buildSuggestions(),
     );
   }
 
 
+
+
   final _suggestions = <WordPair>[];
   final _biggerFront = const TextStyle(fontSize: 18.0);
   final _saved = new Set<WordPair>();
+
+
+  void _pushSaved(){
+    Navigator.of(context).push(
+      new MaterialPageRoute(
+          builder:(context){
+            final tiles = _saved.map((pair){
+              return new ListTile(
+                  title: new Text(pair.asCamelCase, style: _biggerFront),
+              );
+            });
+
+            final divided = ListTile.divideTiles(context: context, tiles: tiles).toList();
+
+            return new Scaffold(
+              appBar: new AppBar(title: new Text("Save Suggestions")),
+              body: new ListView(children: divided),
+            );
+          }
+      )
+    );
+  }
 
   Widget _buildSuggestions(){
     return new ListView.builder(
